@@ -24,7 +24,7 @@ from optparse import OptionParser
 
 #
 # to make Python2 and Python3 act the same -- how dumb
-# 
+#
 def random_seed(seed):
     try:
         random.seed(seed, version=1)
@@ -87,7 +87,7 @@ class Forker:
     def get_name(self):
         if self.curr_index == len(self.curr_names):
             self.grow_names()
-                
+
         name = self.curr_names[self.curr_index]
         self.curr_index += 1
         return name
@@ -113,7 +113,7 @@ class Forker:
         else:
             print('bad style %s' % self.print_style)
             exit(1)
-            
+
         # print stuff before node
         if level > 0:
             # main printing
@@ -130,7 +130,7 @@ class Forker:
                 else:
                     print('%s%s%s ' % (chars[2], chars[1], chars[1]), end='')
             else:
-                # '___' 
+                # '___'
                 print(' %s%s%s ' % (chars[1], chars[1], chars[1]), end='')
 
         # print node
@@ -150,7 +150,7 @@ class Forker:
 
     def print_tree(self):
         return self.walk(self.root_name, 0, {}, False)
-        
+
     def do_fork(self, p, c):
         self.process_list.append(c)
         self.children[c] = []
@@ -181,7 +181,7 @@ class Forker:
                 self.parents[orphan] = exit_parent
                 self.children[exit_parent].append(orphan)
         else:
-            # should set ALL descendants to be child of ROOT 
+            # should set ALL descendants to be child of ROOT
             descendents = self.collect_children(p)
             descendents.remove(p)
             for d in descendents:
@@ -193,7 +193,7 @@ class Forker:
         self.children[exit_parent].remove(p)
         self.children[p] = -1 # should never be used again
         self.parents[p] = -1  # should never be used again
-            
+
         # remove the entry for this proc from children
         return '%s EXITS' % p
 
@@ -215,8 +215,8 @@ class Forker:
             return [tmp[0]]
         else:
             self.bad_action(action)
-        return 
-    
+        return
+
     def run(self):
         print('                           Process Tree:')
         self.print_tree()
@@ -265,7 +265,7 @@ class Forker:
                     action = '%s EXITS (failed: has children)' % exit_choice
                 else:
                     action = self.do_exit(exit_choice)
-            
+
             # if we got here, we actually did an action...
             if self.show_tree:
                 # SHOW TREES (guess actions)
@@ -298,7 +298,7 @@ class Forker:
                     print('')
                 else:
                     print('\n                        Final Process Tree?\n')
-            
+
         return
 
 
@@ -320,8 +320,11 @@ parser.add_option('-c', '--compute', help='compute answers for me', action='stor
 
 (options, args) = parser.parse_args()
 
-if options.seed != -1:
-    random_seed(options.seed)
+print("options.seed is", options.seed)
+
+# Always call random_seed, even if seed is -1,
+# to ensure that the same sequence of random numbers is generated
+random_seed(options.seed)
 
 if options.fork_percentage <= 0.001:
     print('fork_percentage must be > 0.001')
